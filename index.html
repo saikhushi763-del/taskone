@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Architecture & Data Flow Guide</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-code { font-family: 'Fira Code', monospace; }
+        
+        /* Custom pulse and glow animations for data pathways */
+        @keyframes pulseData {
+            0% { stroke-dashoffset: 24; opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 0.4; }
+        }
+        .animate-data-flow {
+            stroke-dasharray: 8, 8;
+            animation: pulseData 1.5s linear infinite;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .component-box {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .component-box:hover, .component-box.active {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-blue-500 selection:text-white">
+
+    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-microchip text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">CompArch Edu</span>
+                    <span class="hidden sm:inline-block text-xs text-slate-400 ml-2 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700">Question 2 Solution</span>
+                </div>
+            </div>
+            <nav class="flex items-center space-x-4">
+                <a href="#diagram" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition">Interactive Diagram</a>
+                <a href="#explanation" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition">Deep Dive</a>
+                <a href="#signals" class="text-sm font-medium text-slate-300 hover:text-blue-400 transition">Signal Flow</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-blue-500/20 shadow-2xl">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-xs font-semibold uppercase tracking-wider">Question 2 • Comprehension</span>
+                        <span class="text-slate-400 text-xs font-code">Keywords: Explain, Block Diagram & System Architecture</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                        Functional Block Diagram of a Computer & Signal Flow
+                    </h1>
+                    <p class="text-slate-300 text-base max-w-3xl leading-relaxed">
+                        Explain the flow of data, instructions, and control signals within the functional block diagram of a computer, detailing the interaction between the CPU, memory unit, and I/O interface.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="triggerSimulation()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] transition active:scale-95 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Simulate Signal Flow</span>
+                    </button>
+                    <button onclick="resetSimulation()" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold border border-slate-700 transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Reset</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="diagram" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-network-wired text-blue-400"></i>
+                        <span>Interactive Computer System Architecture Diagram</span>
+                    </h2>
+                    <p class="text-sm text-slate-400">Click any hardware block below to explore its specific role in data & instruction processing.</p>
+                </div>
+                <div class="flex items-center space-x-4 text-xs font-medium">
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span><span class="text-slate-300">Data Flow</span></div>
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span><span class="text-slate-300">Control Signals</span></div>
+                    <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span class="text-slate-300">Address Bus</span></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                
+                <!-- SVG Diagram Canvas (Span 2) -->
+                <div class="lg:col-span-2 glass-card rounded-2xl p-6 relative overflow-hidden border border-slate-800 shadow-xl flex flex-col items-center justify-center min-h-[460px]">
+                    
+                    <!-- Background Grid Pattern -->
+                    <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+
+                    <!-- SVG System Architecture Schematic -->
+                    <svg viewBox="0 0 800 480" class="w-full h-auto max-w-full relative z-10 select-none">
+                        <!-- Definitions for arrows and gradients -->
+                        <defs>
+                            <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6 Z" fill="#3b82f6"/>
+                            </marker>
+                            <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6 Z" fill="#f59e0b"/>
+                            </marker>
+                            <marker id="arrow-emerald" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6 Z" fill="#10b981"/>
+                            </marker>
+                        </defs>
+
+                        <!-- System Bus Backbone -->
+                        <g id="system-bus" class="transition-opacity duration-300">
+                            <rect x="70" y="210" width="660" height="60" rx="8" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                            <text x="400" y="246" fill="#94a3b8" font-size="14" font-weight="bold" text-anchor="middle" letter-spacing="1">SYSTEM BUS (Data Bus, Address Bus, Control Bus)</text>
+                        </g>
+
+                        <!-- I/O Interface Block -->
+                        <g id="block-io" onclick="selectComponent('io')" class="component-box cursor-pointer">
+                            <rect x="40" y="60" width="140" height="110" rx="12" fill="#0f172a" stroke="#3b82f6" stroke-width="2" class="hover:stroke-cyan-400"/>
+                            <text x="110" y="95" fill="#f8fafc" font-size="14" font-weight="bold" text-anchor="middle"><tspan x="110" dy="0">I/O Interface</tspan><tspan x="110" dy="18" font-size="11" fill="#94a3b8">(Input / Output)</tspan></text>
+                            <circle cx="110" cy="135" r="14" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+                            <text x="110" y="139" fill="#3b82f6" font-size="12" text-anchor="middle"><i class="fa-solid fa-keyboard"></i></text>
+                        </g>
+
+                        <!-- CPU Block -->
+                        <g id="block-cpu" onclick="selectComponent('cpu')" class="component-box cursor-pointer">
+                            <rect x="300" y="20" width="200" height="150" rx="14" fill="#0f172a" stroke="#6366f1" stroke-width="2.5" class="hover:stroke-blue-400"/>
+                            <text x="400" y="48" fill="#f8fafc" font-size="15" font-weight="bold" text-anchor="middle">Central Processing Unit (CPU)</text>
+                            
+                            <!-- ALU Sub-block -->
+                            <rect x="320" y="65" width="75" height="45" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
+                            <text x="357" y="92" fill="#93c5fd" font-size="12" font-weight="bold" text-anchor="middle">ALU</text>
+
+                            <!-- CU Sub-block -->
+                            <rect x="405" y="65" width="85" height="45" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+                            <text x="447" y="92" fill="#fde68a" font-size="12" font-weight="bold" text-anchor="middle">Control Unit</text>
+
+                            <!-- Registers Sub-block -->
+                            <rect x="320" y="120" width="170" height="35" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1"/>
+                            <text x="405" y="142" fill="#6ee7b7" font-size="11" font-weight="bold" text-anchor="middle">Registers (PC, IR, Accumulator)</text>
+                        </g>
+
+                        <!-- Memory Unit Block -->
+                        <g id="block-memory" onclick="selectComponent('memory')" class="component-box cursor-pointer">
+                            <rect x="620" y="60" width="140" height="110" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="2" class="hover:stroke-emerald-400"/>
+                            <text x="690" y="95" fill="#f8fafc" font-size="14" font-weight="bold" text-anchor="middle"><tspan x="690" dy="0">Memory Unit</tspan><tspan x="690" dy="18" font-size="11" fill="#94a3b8">(RAM / ROM)</tspan></text>
+                            <circle cx="690" cy="135" r="14" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+                            <text x="690" y="139" fill="#10b981" font-size="12" text-anchor="middle"><i class="fa-solid fa-memory"></i></text>
+                        </g>
+
+                        <!-- Secondary Storage Block -->
+                        <g id="block-storage" onclick="selectComponent('storage')" class="component-box cursor-pointer">
+                            <rect x="620" y="310" width="140" height="110" rx="12" fill="#0f172a" stroke="#8b5cf6" stroke-width="2" class="hover:stroke-purple-400"/>
+                            <text x="690" y="345" fill="#f8fafc" font-size="14" font-weight="bold" text-anchor="middle"><tspan x="690" dy="0">Secondary Storage</tspan><tspan x="690" dy="18" font-size="11" fill="#94a3b8">(SSD / HDD)</tspan></text>
+                        </g>
+
+                        <!-- Connecting Pathways (SVG Lines) -->
+                        <!-- I/O to Bus -->
+                        <path id="path-io-bus" d="M 110,170 L 110,240 L 150,240" fill="none" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow-blue)" class="transition-all duration-300"/>
+                        
+                        <!-- CPU to Bus -->
+                        <path id="path-cpu-bus" d="M 400,170 L 400,210" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow-amber)" class="transition-all duration-300"/>
+
+                        <!-- Memory to Bus -->
+                        <path id="path-mem-bus" d="M 690,170 L 690,240 L 650,240" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-emerald)" class="transition-all duration-300"/>
+
+                        <!-- Storage to Bus -->
+                        <path id="path-storage-bus" d="M 690,310 L 690,270" fill="none" stroke="#8b5cf6" stroke-width="3" marker-end="url(#arrow-blue)"/>
+                    </svg>
+                    
+                    <div class="absolute bottom-3 left-4 text-xs text-slate-400 flex items-center space-x-2">
+                        <i class="fa-solid fa-hand-pointer text-blue-400 animate-bounce"></i>
+                        <span>Click diagram nodes for detailed component breakdown</span>
+                    </div>
+                </div>
+
+                <!-- Component Details Inspector (Span 1) -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 shadow-xl flex flex-col justify-between min-h-[460px]">
+                    <div id="inspector-content" class="space-y-4">
+                        <div class="flex items-center space-x-3 pb-3 border-b border-slate-800">
+                            <div id="inspector-icon" class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div>
+                                <h3 id="inspector-title" class="text-lg font-bold text-white">Central Processing Unit (CPU)</h3>
+                                <span id="inspector-subtitle" class="text-xs text-blue-400 font-code">The "Brain" of the Computer</span>
+                            </div>
+                        </div>
+                        <p id="inspector-desc" class="text-sm text-slate-300 leading-relaxed">
+                            The CPU fetches instructions from memory, decodes them, and executes them using its internal arithmetic, logic, and control circuitry. It coordinates all hardware operations.
+                        </p>
+                        <div class="space-y-2 pt-2">
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Key Sub-Components:</h4>
+                            <ul id="inspector-list" class="space-y-1.5 text-sm text-slate-300">
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-blue-400 text-xs"></i><span><strong>ALU:</strong> Executes arithmetic and logical operations.</span></li>
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-blue-400 text-xs"></i><span><strong>Control Unit (CU):</strong> Directs instruction flow & signals.</span></li>
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-blue-400 text-xs"></i><span><strong>Registers:</strong> High-speed temporary storage (PC, IR, AC).</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between text-xs text-slate-400">
+                        <span>Architecture Inspector</span>
+                        <span class="text-blue-400 font-code">Interactive Mode: ON</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="explanation" class="space-y-8">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-bold text-white flex items-center space-x-3">
+                    <i class="fa-solid fa-book-open text-cyan-400"></i>
+                    <span>Comprehensive Guide: System Architecture & Data Flow</span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-1">Detailed breakdown addressing Question 2: Flow of data, instructions, and control signals.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Card 1: CPU -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 hover:border-blue-500/40 transition space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">1. Central Processing Unit (CPU)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        The CPU is the primary engine of the computer system. It orchestrates all computational tasks through three major constituent units:
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 font-bold">•</span>
+                            <span><strong>Arithmetic Logic Unit (ALU):</strong> Performs mathematical calculations (+, -, *, /) and logical decisions (AND, OR, comparisons).</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 font-bold">•</span>
+                            <span><strong>Control Unit (CU):</strong> Acts as the system manager. It fetches instructions from memory, decodes them, and issues timing and control signals to hardware components.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 font-bold">•</span>
+                            <span><strong>Register File:</strong> Ultra-fast storage locations including the Program Counter (PC), Instruction Register (IR), and Accumulator (AC).</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Memory Unit -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 hover:border-emerald-500/40 transition space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">2. Memory Unit (Primary Storage)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        The primary memory (RAM/ROM) holds active programs and data currently in execution. Key characteristics include:
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start space-x-2">
+                            <span class="text-emerald-400 font-bold">•</span>
+                            <span><strong>Random Access Memory (RAM):</strong> Volatile memory where instructions and working data reside. Directly accessible by the CPU via the memory bus.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-emerald-400 font-bold">•</span>
+                            <span><strong>Read-Only Memory (ROM):</strong> Non-volatile memory containing critical boot firmware (BIOS/UEFI).</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-emerald-400 font-bold">•</span>
+                            <span><strong>Addressability:</strong> Each memory cell has a unique binary address, enabling precise read/write operations.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: I/O Interface -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 hover:border-purple-500/40 transition space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-plug"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">3. Input / Output (I/O) Interfaces</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        I/O interfaces bridge the gap between the computer's high-speed internal bus and external peripheral devices:
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start space-x-2">
+                            <span class="text-purple-400 font-bold">•</span>
+                            <span><strong>Input Peripherals:</strong> Keyboards, mice, scanners, and sensors translate physical user input into digital signals.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-purple-400 font-bold">•</span>
+                            <span><strong>Output Peripherals:</strong> Displays, printers, and actuators present processed data to the user or physical environment.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-purple-400 font-bold">•</span>
+                            <span><strong>Buffer & Controller:</strong> Matches speed discrepancies between fast CPU and slow mechanical or human interfaces.</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="signals" class="space-y-8">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-bold text-white flex items-center space-x-3">
+                    <i class="fa-solid fa-wave-square text-amber-400"><span></i>
+                    <span>The Flow of Data, Instructions, and Control Signals</span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-1">How the CPU, Memory, and I/O interact during the classic Fetch-Decode-Execute cycle.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Step 1 -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-3xl font-extrabold text-slate-800">01</div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-arrow-down-long"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Instruction Fetch (IF)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        The Control Unit places the address from the <strong>Program Counter (PC)</strong> onto the <strong>Address Bus</strong>. A memory read control signal is asserted. The Memory Unit returns the instruction over the <strong>Data Bus</strong> into the CPU's <strong>Instruction Register (IR)</strong>.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-400 text-xs font-code">Bus Used: Address Bus + Data Bus</span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-3xl font-extrabold text-slate-800">02</div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Instruction Decode (ID)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        The <strong>Control Unit</strong> analyzes the binary opcode residing in the Instruction Register. It determines what operation needs to be performed (e.g., ADD, LOAD, STORE) and generates the precise internal <strong>control signals</strong> to configure the ALU and data paths.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-code">Signal Type: Control Signals</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4 relative overflow-hidden">
+                    <div class="absolute top-4 right-4 text-3xl font-extrabold text-slate-800">03</div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Execution (EX) & Writeback</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        The <strong>ALU</strong> executes the operation using operands from registers or memory. Results are written back to registers or stored back into memory via the Data Bus. The <strong>Program Counter (PC)</strong> increments to point to the next sequential instruction.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-code">Bus Used: Data Bus + Control Bus</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 mt-20 py-8 text-center text-sm text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>Computer Architecture & System Design Educational Module • Question 2 Comprehension Guide</p>
+            <p class="text-xs text-slate-500 font-code">Designed for Computer Science Students & Educators</p>
+        </div>
+    </footer>
+
+    <script>
+        // Component Data Dictionary for Interactive Inspector
+        const componentData = {
+            cpu: {
+                title: "Central Processing Unit (CPU)",
+                subtitle: "The 'Brain' of the Computer System",
+                icon: '<i class="fa-solid fa-brain"></i>',
+                desc: "The CPU fetches instructions from memory, decodes them, and executes them using its internal arithmetic, logic, and control circuitry. It coordinates all hardware operations.",
+                list: [
+                    '<i class="fa-solid fa-check text-blue-400 text-xs"></i><span><strong>ALU:</strong> Executes arithmetic and logical operations.</span>',
+                    '<i class="fa-solid fa-check text-blue-400 text-xs"></i><span><strong>Control Unit (CU):</strong> Directs instruction flow & signals.</span>',
+                    '<i class="fa-solid fa-check text-blue-400 text-xs"></i><span><strong>Registers:</strong> High-speed temporary storage (PC, IR, Accumulator).</span>'
+                ]
+            },
+            memory: {
+                title: "Memory Unit (RAM / ROM)",
+                subtitle: "Primary High-Speed Data Storage",
+                icon: '<i class="fa-solid fa-memory"></i>',
+                desc: "Stores programs and data currently in active use by the CPU. The CPU interacts with memory directly via the System Bus using read and write control commands.",
+                list: [
+                    '<i class="fa-solid fa-check text-emerald-400 text-xs"></i><span><strong>RAM:</strong> Volatile working memory for active tasks.</span>',
+                    '<i class="fa-solid fa-check text-emerald-400 text-xs"></i><span><strong>ROM:</strong> Permanent boot firmware storage.</span>',
+                    '<i class="fa-solid fa-check text-emerald-400 text-xs"></i><span><strong>Address Bus Link:</strong> Pinpoints exact memory cells.</span>'
+                ]
+            },
+            io: {
+                title: "Input / Output (I/O) Interface",
+                subtitle: "Bridge to Peripheral Devices",
+                icon: '<i class="fa-solid fa-plug"></i>',
+                desc: "Manages communication between the computer system and external devices such as keyboards, displays, sensors, and network cards.",
+                list: [
+                    '<i class="fa-solid fa-check text-purple-400 text-xs"></i><span><strong>Input Devices:</strong> Converts user actions into digital data.</span>',
+                    '<i class="fa-solid fa-check text-purple-400 text-xs"></i><span><strong>Output Devices:</strong> Displays results to the user.</span>',
+                    '<i class="fa-solid fa-check text-purple-400 text-xs"></i><span><strong>Buffer Control:</strong> Synchronizes speeds between CPU and I/O.</span>'
+                ]
+            },
+            storage: {
+                title: "Secondary Storage (SSD / HDD)",
+                subtitle: "Non-Volatile Long-Term Storage",
+                icon: '<i class="fa-solid fa-hard-drive"></i>',
+                desc: "Holds massive amounts of data and applications permanently even when power is turned off. Data is loaded into RAM before the CPU can execute it.",
+                list: [
+                    '<i class="fa-solid fa-check text-purple-400 text-xs"></i><span><strong>Non-Volatile:</strong> Retains data without electrical power.</span>',
+                    '<i class="fa-solid fa-check text-purple-400 text-xs"></i><span><strong>High Capacity:</strong> Gigabytes to Terabytes of storage.</span>',
+                    '<i class="fa-solid fa-check text-purple-400 text-xs"></i><span><strong>DMA Support:</strong> Direct Memory Access transfers.</span>'
+                ]
+            }
+        };
+
+        function selectComponent(key) {
+            const data = componentData[key];
+            if (!data) return;
+
+            document.getElementById('inspector-title').innerText = data.title;
+            document.getElementById('inspector-subtitle').innerText = data.subtitle;
+            document.getElementById('inspector-icon').innerHTML = data.icon;
+            document.getElementById('inspector-desc').innerText = data.desc;
+            
+            const listEl = document.getElementById('inspector-list');
+            listEl.innerHTML = '';
+            data.list.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center space-x-2';
+                li.innerHTML = item;
+                listEl.appendChild(li);
+            });
+
+            // Highlight selected SVG block
+            document.querySelectorAll('.component-box rect').forEach(rect => {
+                rect.classList.remove('stroke-cyan-400', 'stroke-blue-400', 'stroke-emerald-400', 'stroke-purple-400');
+            });
+        }
+
+        function triggerSimulation() {
+            const paths = ['path-io-bus', 'path-cpu-bus', 'path-mem-bus', 'path-storage-bus'];
+            paths.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('animate-data-flow');
+                    el.style.stroke = '#3b82f6';
+                }
+            });
+            selectComponent('cpu');
+        }
+
+        function resetSimulation() {
+            const paths = ['path-io-bus', 'path-cpu-bus', 'path-mem-bus', 'path-storage-bus'];
+            paths.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.remove('animate-data-flow');
+                }
+            });
+            selectComponent('cpu');
+        }
+    </script>
+</body>
+</html>
